@@ -20,8 +20,8 @@ model Department {
   parentId  Int? // 用于实现父子部门树
   parent    Department?  @relation("DeptToDept", fields: [parentId], references: [id])
   children  Department[] @relation("DeptToDept")
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  createdAt DateTime     @default(now()) @db.Timestamptz
+  updatedAt DateTime     @updatedAt @db.Timestamptz
 }
 
 // 用户模型
@@ -38,7 +38,7 @@ model User {
   // 单点登录相关字段
   tokenVersion Int       @default(0) // Token版本号，用于实现单点登录（登录时递增，使旧token失效）
   lastLoginAt  DateTime? @db.Timestamptz // 最后登录时间
-  lastLoginIp  String?   // 最后登录IP
+  lastLoginIp  String? // 最后登录IP
 
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @updatedAt @db.Timestamptz
@@ -51,8 +51,8 @@ model Role {
   description String?
   users       User[]       @relation("UserRoles")
   permissions Permission[] @relation("RolePermissions")
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  createdAt   DateTime     @default(now()) @db.Timestamptz
+  updatedAt   DateTime     @updatedAt @db.Timestamptz
 }
 
 // RBAC：权限点
@@ -63,4 +63,15 @@ model Permission {
   roles     Role[]   @relation("RolePermissions")
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+// 系统配置（键值对形式存储）
+model SiteConfig {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique // 配置键，如: site_title, site_logo
+  value       String   @db.Text // 配置值
+  description String? // 配置说明
+  group       String   @default("general") // 配置分组，如: general, appearance, seo
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
 }

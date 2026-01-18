@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RbacModule } from './modules/rbac/rbac.module';
+import { SiteConfigModule } from './modules/config/config.module';
 import { PrismaService } from './prisma/prisma.service';
 
 @Module({
@@ -17,6 +18,7 @@ import { PrismaService } from './prisma/prisma.service';
     UsersModule,
     AuthModule,
     RbacModule,
+    SiteConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

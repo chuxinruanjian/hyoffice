@@ -28,6 +28,50 @@ const defaultPermissions = [
   { name: '创建部门', code: 'department:create' },
   { name: '编辑部门', code: 'department:update' },
   { name: '删除部门', code: 'department:delete' },
+  // 系统配置权限
+  { name: '创建配置', code: 'config:create' },
+  { name: '编辑配置', code: 'config:update' },
+  { name: '删除配置', code: 'config:delete' },
+];
+
+// 默认网站配置
+const defaultSiteConfigs = [
+  {
+    key: 'site_title',
+    value: '办公管理系统',
+    description: '网站标题',
+    group: 'general',
+  },
+  {
+    key: 'site_description',
+    value: '企业办公管理平台',
+    description: '网站描述',
+    group: 'general',
+  },
+  {
+    key: 'site_logo',
+    value: '/logo.png',
+    description: '网站Logo地址',
+    group: 'appearance',
+  },
+  {
+    key: 'site_favicon',
+    value: '/favicon.ico',
+    description: '网站Favicon地址',
+    group: 'appearance',
+  },
+  {
+    key: 'copyright',
+    value: '© 2026 办公管理系统. All rights reserved.',
+    description: '版权信息',
+    group: 'general',
+  },
+  {
+    key: 'icp_number',
+    value: '',
+    description: 'ICP备案号',
+    group: 'general',
+  },
 ];
 
 async function main() {
@@ -74,7 +118,7 @@ async function main() {
       },
     },
   });
-  const employeeRole = await prisma.role.upsert({
+  await prisma.role.upsert({
     where: { name: 'Employee' },
     update: {
       description: '普通员工，拥有基础查看权限',
@@ -102,7 +146,7 @@ async function main() {
       },
     },
   });
-  const managerRole = await prisma.role.upsert({
+  await prisma.role.upsert({
     where: { name: 'Manager' },
     update: {
       description: '部门经理，可管理本部门员工',
@@ -130,6 +174,17 @@ async function main() {
     },
   });
 
+  // 7. 创建默认网站配置
+  console.log('⚙️ 创建默认网站配置...');
+  for (const config of defaultSiteConfigs) {
+    await prisma.siteConfig.upsert({
+      where: { key: config.key },
+      update: {},
+      create: config,
+    });
+  }
+  console.log(`✅ 已创建 ${defaultSiteConfigs.length} 个配置项`);
+
   console.log('');
   console.log('✅ 种子数据初始化成功！');
   console.log('');
@@ -137,6 +192,7 @@ async function main() {
   console.log(`   - 权限: ${allPermissions.length} 个`);
   console.log(`   - 角色: 3 个 (Administrator, Manager, Employee)`);
   console.log(`   - 用户: 1 个 (admin)`);
+  console.log(`   - 配置: ${defaultSiteConfigs.length} 个`);
   console.log('');
   console.log('🔑 默认管理员账号:');
   console.log('   用户名: admin');
