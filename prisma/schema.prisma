@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 组织架构：部门
+model Department {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  users     User[] // 一个部门有多个用户
+  parentId  Int? // 用于实现父子部门树
+  parent    Department?  @relation("DeptToDept", fields: [parentId], references: [id])
+  children  Department[] @relation("DeptToDept")
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+// 用户模型
+model User {
+  id           Int         @id @default(autoincrement())
+  username     String      @unique
+  password     String
+  realName     String?
+  email        String?     @unique
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  roles        Role[]      @relation("UserRoles") // 多对多关联角色
+
+  // 单点登录相关字段
+  tokenVersion Int       @default(0) // Token版本号，用于实现单点登录（登录时递增，使旧token失效）
+  lastLoginAt  DateTime? @db.Timestamptz // 最后登录时间
+  lastLoginIp  String?   // 最后登录IP
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+// RBAC：角色
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique // 如: admin, manager, employee
+  description String?
+  users       User[]       @relation("UserRoles")
+  permissions Permission[] @relation("RolePermissions")
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+// RBAC：权限点
+model Permission {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // 如: 用户管理
+  code      String   @unique // 如: user:list, user:create
+  roles     Role[]   @relation("RolePermissions")
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
