@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# uploads
+uploads/*
+
 # Logs
 logs
 *.log
@@ -27,6 +30,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+.cursorrules
 
 # IDE - VSCode
 .vscode/*

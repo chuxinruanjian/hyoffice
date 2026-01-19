@@ -29,6 +29,7 @@ const defaultPermissions = [
   { name: '编辑部门', code: 'department:update' },
   { name: '删除部门', code: 'department:delete' },
   // 系统配置权限
+  { name: '配置列表（含私密）', code: 'config:list' },
   { name: '创建配置', code: 'config:create' },
   { name: '编辑配置', code: 'config:update' },
   { name: '删除配置', code: 'config:delete' },
@@ -37,25 +38,25 @@ const defaultPermissions = [
 // 默认网站配置
 const defaultSiteConfigs = [
   {
-    key: 'site_title',
+    key: 'siteTitle',
     value: '办公管理系统',
     description: '网站标题',
     group: 'general',
   },
   {
-    key: 'site_description',
+    key: 'siteDescription',
     value: '企业办公管理平台',
     description: '网站描述',
     group: 'general',
   },
   {
-    key: 'site_logo',
+    key: 'siteLogo',
     value: '/logo.png',
     description: '网站Logo地址',
     group: 'appearance',
   },
   {
-    key: 'site_favicon',
+    key: 'siteFavicon',
     value: '/favicon.ico',
     description: '网站Favicon地址',
     group: 'appearance',
@@ -67,7 +68,7 @@ const defaultSiteConfigs = [
     group: 'general',
   },
   {
-    key: 'icp_number',
+    key: 'icpNumber',
     value: '',
     description: 'ICP备案号',
     group: 'general',
