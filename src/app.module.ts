@@ -17,22 +17,24 @@ import { PrismaService } from './prisma/prisma.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // 静态文件服务 - public 目录
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/public',
-      serveStaticOptions: {
-        index: false,
+    ServeStaticModule.forRoot(
+      // 1. 静态文件服务 - uploads 目录 (/uploads)
+      {
+        rootPath: join(process.cwd(), 'uploads'),
+        serveRoot: '/uploads',
+        serveStaticOptions: {
+          index: false,
+        },
       },
-    }),
-    // 静态文件服务 - uploads 目录
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/uploads',
-      serveStaticOptions: {
-        index: false,
+      // 2. 静态文件服务 - public 目录 (/)
+      {
+        rootPath: join(process.cwd(), 'public'),
+        exclude: ['/api/:path(.*)'],
+        serveStaticOptions: {
+          index: false,
+        },
       },
-    }),
+    ),
     PrismaModule,
     UsersModule,
     AuthModule,

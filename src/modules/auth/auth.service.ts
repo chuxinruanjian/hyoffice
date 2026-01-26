@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/prisma.service';
 import * as argon2 from 'argon2';
@@ -33,13 +38,13 @@ export class AuthService {
 
     // 2. 校验用户是否存在
     if (!user) {
-      throw new UnauthorizedException('账号或密码错误');
+      throw new NotFoundException('用户不存在');
     }
 
     // 3. 校验密码
     const isPasswordValid = await argon2.verify(user.password, password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('账号或密码错误');
+      throw new BadRequestException('密码错误');
     }
 
     // 4. 更新tokenVersion（使旧token失效）和最后登录时间
@@ -63,7 +68,7 @@ export class AuthService {
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      token: await this.jwtService.signAsync(payload),
       user: {
         id: updatedUser.id,
         username: updatedUser.username,
@@ -78,7 +83,10 @@ export class AuthService {
    * 验证JWT payload中的tokenVersion是否有效
    * 用于单点登录：如果tokenVersion不匹配，说明用户在其他地方登录过
    */
-  async validateTokenVersion(userId: number, tokenVersion: number): Promise<boolean> {
+  async validateTokenVersion(
+    userId: number,
+    tokenVersion: number,
+  ): Promise<boolean> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { tokenVersion: true },

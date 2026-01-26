@@ -51,7 +51,7 @@ const defaultSiteConfigs = [
   },
   {
     key: 'siteLogo',
-    value: '/logo.png',
+    value: '/logo.svg',
     description: '网站Logo地址',
     group: 'appearance',
   },
