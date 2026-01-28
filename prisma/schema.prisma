@@ -35,6 +35,11 @@ model User {
   department   Department? @relation(fields: [departmentId], references: [id])
   roles        Role[]      @relation("UserRoles") // 多对多关联角色
 
+  // 个人信息
+  avatar      String  @default("/avatar.jpg") // 头像地址
+  phone       String? // 手机号码
+  wechatOpenId String? // 微信公众号OpenID
+
   // 单点登录相关字段
   tokenVersion Int       @default(0) // Token版本号，用于实现单点登录（登录时递增，使旧token失效）
   lastLoginAt  DateTime? @db.Timestamptz // 最后登录时间

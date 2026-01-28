@@ -4,7 +4,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import globals from 'globals';
 import tslint from 'typescript-eslint';
 
-export default tslint.config(
+export default [
   {
     ignores: ['eslint.config.mjs'],
   },
@@ -32,4 +32,4 @@ export default tslint.config(
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
-);
+];
